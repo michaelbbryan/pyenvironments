@@ -3,39 +3,31 @@
 ::     and installs it into the ipython kernel for work in Jupyter
 ::
 
-echo off
-if [%1]==[] goto usage
-if NOT [%2]==[] goto usage
+@echo off
 
-echo setting local
-::SETLOCAL
+:: Check if argument 1 is missing
+if "%~1"=="" (
+    echo Error: Argument is missing.
+    echo Usage: %~nx0 ^<environment name^>
+    exit /b 1
+)
 
-SET envname=%1
-:: FOR /D %%d in (*) do (    )
+SETLOCAL
+set "envname=%~1"
 
-echo off
-echo starting
-echo %envname%
-::conda activate %envname% >nul 2>nul
-::if errorlevel 1 (
-echo Creating %envname% environment
-cd %envname%
-conda env create -n %envname% -f environment.yml 
-::>nul
-echo adding it to ipy kernel
-ipython kernel install --user --name=%envname% 
-::>nul
-echo back to base
-conda activate base 
-::>nul
-cd ..
-::     ) else (echo Environment %envname% already exists)
-echo ending local
-::ENDLOCAL
-echo done
-goto :eof
+echo Generating environment: %envname%
 
-:usage
-echo Usage: %0 ^<EnvironmentName^>
+:: The requested environment should not exist, so activating it should throw and error.
+call conda activate %envname% >nul 2>nul
+if errorlevel 1 (
+    @echo Creating %envname% environment
+    cd %envname%
+    call conda env create -n %envname% -f environment.yml 
+    call conda activate %envname% 
+    call ipython kernel install --user --name=%envname% 
+    call conda activate base 
+    cd ..
+  ) else (echo Environment %envname% already exists)
 
-
+ENDLOCAL
+@echo done

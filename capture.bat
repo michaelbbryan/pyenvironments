@@ -4,29 +4,22 @@
 
 @echo off
 
-@echo off
-if [%1]==[] goto usage
-if [%2]!=[] goto usage
+:: Check if argument 1 is missing
+if "%~1"=="" (
+    echo Error: Argument is missing.
+    echo Usage: %~nx0 ^<environment name^>
+    exit /b 1
+)
 
 SETLOCAL
+set "envname=%~1"
 
-:: for /d %envname% in (base geotools machinelearning naturallanguage financialmarkets dataengineering) do (
-  conda activate %envname%
-  if errorlevel 0 (
-    echo %envname%
-    cd %envname%
-    pip list --format=freeze > requirements.txt
-    conda env export > environment.yml
-    conda env export -n %envname% > environment.yml
-    cd ..
-    )
-  )
+call conda activate %envname%
+cd %envname%
+pip list --format=freeze > requirements.txt
+conda env export -n %envname% > environment.yml
+cd ..
 
 ENDLOCAL
 @echo done
-goto :eof
-
-:usage
-@echo Usage: %0 ^<EnvironmentName^>
-
-
+@echo on

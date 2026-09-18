@@ -5,8 +5,9 @@ packages can grow unmanageably.  These environments provide a baseline and sampl
 
 Each folder provides the requirements.txt and environment.yml file for an environment of the folders name.
 
-    capture.bat is a Windows batch file for creating the requirements.txt and environment.yml from a current environment.
+    capture.bat is a Windows batch file that takes an existing environment and freezes its requirements.txt and environment.yml.
     generate.bat is a complementary batch file that creates an environment from those files.
+    remove.bat will take a generated environment, remove it from anaconda and remove its kernel reference in Jupyter
 
 Each folder may have its own README.md file and potentially different LICENSE text.
 
